@@ -1,6 +1,7 @@
 ﻿using BasicRender;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -73,7 +74,7 @@ namespace Switchboard {
         public void Close() {
             if(!Connected) { return; } //Make sure attempting to close an already closed connection doesn't cause an exception. That's kinda bobo.
             //Send CLOSE to the server, closing that side.
-            Send("CLOSE");
+            try { Send("CLOSE"); } catch(IOException) { } //try to close remotely. This may fail because of an IOException so if algo just shhh.
 
             //I mean that should close the TCPClient and the stream, no?
             River.Close();

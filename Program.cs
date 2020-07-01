@@ -52,17 +52,26 @@ namespace SwitchboardClient {
                         else { MainClient.Close(); Prefix = "DISCONNECTED"; Console.Title = "Switchboard Console: Disconnected"; MainClient = null; } //Close the connection.
                         break;
                     case "READ":
+                        if(MainClient == null) { Render.Echo("No connection to read from!"); break; } 
                         if(!MainClient.Available) {
                             Render.Echo("No data is available! Wait for data? ");
                             if(!YesNo()) { break; } //Display a warning if there is no data to read, and if the user wants to read the data.
                         }
-                        Render.Echo(MainClient.Receive()); //Read the data and display it.
+                        try { Render.Echo(MainClient.Receive()); } 
+                        catch(Exception) { Render.Sprite("There was an error sending/receiving this command. Perhaps the server was disconnected?",ConsoleColor.Black,ConsoleColor.Red); }
+                         //Read the data and display it.
                         break;
                     default:
 
                         //Try to send the commend to the server.
                         if(MainClient == null || !MainClient.Connected) { Render.Echo("Client is not connected! Connect using CONNECT [IP]:[PORT]"); }  //warn the user if there's no connection.
-                        else { Render.Echo(MainClient.SendReceive(Prompt)); } 
+                        else {
+                            try {Render.Echo(MainClient.SendReceive(Prompt));} 
+                            catch(Exception) {Render.Sprite("There was an error sending/receiving this command. Perhaps the server was disconnected?",ConsoleColor.Black,ConsoleColor.Red);}
+                            
+                        
+                        }
+                        
                         break;
                 }
 

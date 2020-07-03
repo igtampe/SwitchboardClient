@@ -14,17 +14,8 @@ namespace SwitchboardClient {
 
             //Set title and clear the screan
             Console.Title = "Switchboard Console: Disconnected";
-            Console.Clear();
+            drawHeader();
 
-            //Draw the header
-            SwitchboardLogo Logo = new SwitchboardLogo();
-            Logo.draw(2,1);
-            Render.Sprite("Switchboard Console [Version 1.0]",Console.BackgroundColor,ConsoleColor.White,3 + Logo.GetWidth(),2);
-            Render.Sprite("(C)2020 Chopo, No Rights Reserved",Console.BackgroundColor,ConsoleColor.White,3 + Logo.GetWidth(),3);
-
-            //Set the position, and draw a neat little message
-            Render.SetPos(0,2 + Logo.GetHeight());
-            Render.Echo("Welcome to the Switchboard Console! Type CONNECT [IP]:[PORT] to connect to a server! \n\n");
 
             //The Main Loop
             while(true) {
@@ -40,9 +31,11 @@ namespace SwitchboardClient {
                         else if(PromptSplit.Length!=2) { Render.Echo("Impropper connection request. Try something like 127.0.0.1:909"); } //Make sure the connection prompt is the right length
                         else {
                             String[] IPPortSplit = PromptSplit[1].Split(':'); //Split the IP and port
-                            if(IPPortSplit.Length != 2) { Render.Echo("IP/Port combination not valid"); break; } //Make sure the IP/Port combination is the right length.
-                            
-                            MainClient = new Switchboard.SwitchboardClient(IPPortSplit[0],int.Parse(IPPortSplit[1])); //Create client
+                            String IP = IPPortSplit[0];
+                            String Port;
+                            if(IPPortSplit.Length == 1) { Port = "909"; } else { Port = IPPortSplit[1]; }
+
+                            MainClient = new Switchboard.SwitchboardClient(IPPortSplit[0],int.Parse(Port)); //Create client
                             if(MainClient.Connect()) { Prefix = IPPortSplit[0];   Console.Title = "Switchboard Console: " + IPPortSplit[0];}  //Initialize it, and if we manage to connect, setup the prefix and title.
                             else { MainClient = null; } //If not reset mainclient to null.
                         }
@@ -61,6 +54,9 @@ namespace SwitchboardClient {
                         catch(Exception) { Render.Sprite("There was an error sending/receiving this command. Perhaps the server was disconnected?",ConsoleColor.Black,ConsoleColor.Red); }
                          //Read the data and display it.
                         break;
+                    case "CLS":
+                        drawHeader();
+                        break;
                     default:
 
                         //Try to send the commend to the server.
@@ -78,6 +74,20 @@ namespace SwitchboardClient {
             }
 
 
+        }
+
+        public static void drawHeader() {
+            Console.Clear();
+
+            //Draw the header
+            SwitchboardLogo Logo = new SwitchboardLogo();
+            Logo.draw(2,1);
+            Render.Sprite("Switchboard Console [Version 1.0]",Console.BackgroundColor,ConsoleColor.White,3 + Logo.GetWidth(),2);
+            Render.Sprite("(C)2020 Chopo, No Rights Reserved",Console.BackgroundColor,ConsoleColor.White,3 + Logo.GetWidth(),3);
+
+            //Set the position, and draw a neat little message
+            Render.SetPos(0,2 + Logo.GetHeight());
+            Render.Echo("Welcome to the Switchboard Console! Type CONNECT [IP]:[PORT] to connect to a server! \n\n");
         }
 
         /// <summary>Prompts the user for input</summary>

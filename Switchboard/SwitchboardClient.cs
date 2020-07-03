@@ -70,7 +70,7 @@ namespace Switchboard {
         public int GetPort() { return Port; }
         public bool IsBusy() { return Busy; }
 
-        //------------------------------[Function]------------------------------
+        //------------------------------[Functions]------------------------------
 
         /// <summary>Initiate the connection</summary>
         /// <returns>True if it managed to connect, false otherwise</returns>
@@ -136,14 +136,15 @@ namespace Switchboard {
         public String Receive() {
             if(!Connected) { throw new InvalidOperationException("This client is not connected right now!"); }
             Busy = true;
-            while(!Available) {
 
-                //Perhaps here we can also specify a timeout.
-
-                //on a GUI application, here would be a good place to check if your user needs to  cancel the operation. Probably replace my own check
+            //10 second time out.
+            for(int X = 0; X < 100; X++) {
+                if(Available) { break; }
                 if(Console.KeyAvailable) { if(Console.ReadKey().Key == ConsoleKey.Escape) { return "BREAK"; } } //This is to allow a user to breka the connection
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
+
+            if(!Available) { throw new TimeoutException("Server did not respond in 10 seconds. Probably CLOSE the connection"); }
 
             List<Byte> Bytes = new List<Byte>();
             while(Available) { Bytes.Add((byte)(River.ReadByte())); } //Get all the bytes in a nice little array.
@@ -198,6 +199,7 @@ namespace Switchboard {
             ConnectionStatus++; //Increment Connection Status
             Render.Echo(Output); //Render the spinner.
         }
+
 
     }
 }

@@ -28,9 +28,8 @@ namespace SwitchboardClient {
                 switch(PromptSplit[0].ToUpper()) {
                     case "CONNECT":
                         //attempt to connect to a Server
-                        if(MainClient != null) { Render.Echo("There's already an ongoing connection! Close this one to open another one."); } //Make sure we're not already connected
-                        else if(PromptSplit.Length != 2) { Render.Echo("Impropper connection request. Try something like 127.0.0.1:909"); } //Make sure the connection prompt is the right length
-                        else {
+                        if(MainClient != null) { Render.Echo("There's already an ongoing connection! Close this one to open another one."); break; } //Make sure we're not already connected
+                        if(PromptSplit.Length == 2) {
                             String[] IPPortSplit = PromptSplit[1].Split(':'); //Split the IP and port
                             String IP = IPPortSplit[0];
                             String Port;
@@ -39,7 +38,8 @@ namespace SwitchboardClient {
                             MainClient = new Switchboard.SwitchboardClient(IP,int.Parse(Port)); //Create client
                             if(MainClient.Connect()) { UpdatePrefix(IP); }  //Initialize it, and if we manage to connect, setup the prefix and title.
                             else { MainClient = null; } //If not reset mainclient to null.
-                        }
+
+                        } else {Render.Echo("Impropper connection request. Try something like 127.0.0.1:909");}
                         break;
                     case "CLOSE":
                         //Close the connection.

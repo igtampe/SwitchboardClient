@@ -7,7 +7,8 @@ Also, if the server connection ever hangs, you can break out of a read attempt b
 
 See the Server Here: https://github.com/igtampe/SwitchboardServer
 
-Below is a little bit more about the SwitchboardClient itself:
+![Switchboard Ecosystem](https://raw.githubusercontent.com/igtampe/SwitchboardServer/master/Images/Switchboard%20Ecosystem.png)<br>
+_The Switchboard Ecosystem with the client/console on the left_
 
 ## Still simple
 Switchboard aims to provide an improved connection response-time, and expanded capabilities for sending/receiving data, with the same level of simplicity to SmokeSignal.
